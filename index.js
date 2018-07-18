@@ -3,8 +3,18 @@ const readline = require('readline-sync');
 const MagicCSV = require("magic-csv");
 csv = new MagicCSV({trim: true});
 
-const moment = require('moment');
-moment().format();
+const log4js = require('log4js');
+
+const logger = log4js.getLogger('logs\\debug.log');
+
+log4js.configure({
+    appenders: {
+        file: { type: 'fileSync', filename: 'logs\\debug.log' }
+    },
+    categories: {
+        default: { appenders: ['file'], level: 'debug'}
+    }
+});
 
 class Transaction {
     constructor(date,fromPerson,toPerson,narrative,amountPounds,amountPennies){
@@ -43,7 +53,6 @@ var allTransactions=[];
 
 console.log('Please enter name of file to be used:')
 const fileChoice=readline.prompt();
-
 
 csv.readFile(fileChoice, function() {
      numberOfRows=csv.getRowCount()
