@@ -41,7 +41,11 @@ function removeDuplicates(inputArray) {
 
 var allTransactions=[];
 
-csv.readFile('Transactions2014.csv', function() {
+console.log('Please enter name of file to be used:')
+const fileChoice=readline.prompt();
+
+
+csv.readFile(fileChoice, function() {
      numberOfRows=csv.getRowCount()
 
     for (let i=0;i<numberOfRows;i++) {      //Create an array containing all transactions as individual objects
