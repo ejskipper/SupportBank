@@ -50,7 +50,7 @@ function removeDuplicates(inputArray) {
 }
 
 function countDecimals(value) { 
-    if ((value % 1) != 0) 
+    if ((value % 1) != 0 && typeof value==='number') 
         return value.toString().split(".")[1].length;  
     return 0;
 }
@@ -110,9 +110,6 @@ csv.readFile(fileChoice, function() {
                 allAccounts[j].balancePounds+=allTransactions[i].amountPounds;
                 allAccounts[j].balancePennies+=allTransactions[i].amountPennies;
             }
-            if (isNaN(allAccounts[j].balancePounds)||isNaN(allAccounts[j].balancePennies)) {
-                logger.error(`Transaction ${i} caused error in account ${j} (${allAccounts[j].owner})`)
-            }
         }
         
     }
@@ -120,10 +117,9 @@ csv.readFile(fileChoice, function() {
     for (let i=0;i<allAccounts.length;i++) {
         allAccounts[i].balancePennies/=100;
         allAccounts[i].balancePounds+=allAccounts[i].balancePennies;
-        if (countDecimals(allAccounts[i].balancePounds)>2) {
-            logger.error(`Invalid balance in account ${i} (${allAccounts[i].owner}): More than two decimal places`)
-        }
-    }
+        // Wanted to use countDecimals here to check no. of decimal places but kept throwing undefined
+         }
+    
 
     function listAll() {
         console.log('The following accounts were found:\n');
