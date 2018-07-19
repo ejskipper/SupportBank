@@ -22,6 +22,24 @@ function removeDuplicates(inputArray) {
     }
 }
 
+function splitPoundsPennies(allTransactions) {
+    for (let i=0;i<allTransactions.length;i++) {
+        let stringAmount=allTransactions[i].Amount.toString();
+        let arrayAmount=stringAmount.split('.');
+        allTransactions[i].amountPounds=arrayAmount[0];
+        allTransactions[i].amountPennies=arrayAmount[1];
+        if (allTransactions[i].amountPennies===undefined) {
+            allTransactions[i].amountPennies='0';
+        }
+        if (isNaN(allTransactions[i].amountPounds)){
+            logger.error(`?? ${i+2} of file produced invalid data: Pounds not a number`);
+        }
+        if (isNaN(allTransactions[i].amountPennies)){
+            logger.error(`?? ${i+2} of file produced invalid data: Pennies not a number`);
+        }
+    }
+}
+
 function createAccountArray(allTransactions) {
     let allFromNames=[];                         
     let allToNames=[];
@@ -62,7 +80,7 @@ function addSubtractInAccounts(allTransactions,allAccounts) {
 }
 
 
-function recombinePenniesPounds(allAccounts) {
+function recombinePenniesPounds(allAccounts) { //This doesn't work?
     for (let i=0;i<allAccounts.length;i++) {
     allAccounts[i].balancePennies/=100;
     allAccounts[i].balancePounds+=allAccounts[i].balancePennies;
@@ -99,4 +117,4 @@ function userRequestList(allTransactions,allAccounts) {
     }
 }
 
-module.exports={createAccountArray,parseIntTransacAmounts,addSubtractInAccounts,recombinePenniesPounds,userRequestList}
+module.exports={createAccountArray,parseIntTransacAmounts,addSubtractInAccounts,recombinePenniesPounds,userRequestList,splitPoundsPennies}
