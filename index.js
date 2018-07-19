@@ -49,6 +49,12 @@ function removeDuplicates(inputArray) {
     }
 }
 
+function countDecimals(value) { 
+    if ((value % 1) != 0) 
+        return value.toString().split(".")[1].length;  
+    return 0;
+}
+
 var allTransactions=[];
 
 console.log('Please enter name of file to be used:')
@@ -56,6 +62,11 @@ const fileChoice=readline.prompt();
 
 csv.readFile(fileChoice, function() {
      numberOfRows=csv.getRowCount()
+     if (numberOfRows) {
+         logger.info('Data extracted from file.')
+     } else {
+         logger.error('File not opened successfully.')
+     }
 
     for (let i=0;i<numberOfRows;i++) {      //Create an array containing all transactions as individual objects
         let rowContent=csv.getRow(i);
@@ -67,7 +78,12 @@ csv.readFile(fileChoice, function() {
         if (allTransactions[i].amountPennies===undefined) {
             allTransactions[i].amountPennies='0';
         }
-        
+        if (isNaN(allTransactions[i].amountPounds)){
+            logger.error(`Line ${i+2} of file produced invalid data: Pounds not a number`);
+        }
+        if (isNaN(allTransactions[i].amountPennies)){
+            logger.error(`Line ${i+2} of file produced invalid data: Pennies not a number`);
+        }
     }
 
     var allFromNames=csv.getCol(1);     //Create an array containing each name from the data
@@ -94,6 +110,9 @@ csv.readFile(fileChoice, function() {
                 allAccounts[j].balancePounds+=allTransactions[i].amountPounds;
                 allAccounts[j].balancePennies+=allTransactions[i].amountPennies;
             }
+            if (isNaN(allAccounts[j].balancePounds)||isNaN(allAccounts[j].balancePennies)) {
+                logger.error(`Transaction ${i} caused error in account ${j} (${allAccounts[j].owner})`)
+            }
         }
         
     }
@@ -101,6 +120,9 @@ csv.readFile(fileChoice, function() {
     for (let i=0;i<allAccounts.length;i++) {
         allAccounts[i].balancePennies/=100;
         allAccounts[i].balancePounds+=allAccounts[i].balancePennies;
+        if (countDecimals(allAccounts[i].balancePounds)>2) {
+            logger.error(`Invalid balance in account ${i} (${allAccounts[i].owner}): More than two decimal places`)
+        }
     }
 
     function listAll() {
