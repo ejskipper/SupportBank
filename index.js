@@ -25,11 +25,33 @@ class Transaction {
     this.amountPennies=amountPennies;
     }
 }
+
+function listAll(inputArray) {              
+    console.log('The following accounts were found:\n');
+    for (let i=0;i<inputArray.length;i++) {
+        console.log(inputArray[i].owner);
+        console.log('£',inputArray[i].balancePounds,'\n');
+    }
+}
+
+function listAccountTransactions(inputData,name) {
+    console.log(`\nThe following transactions were found for ${name}:\n`)
+    for (let i=0;i<inputData.length;i++) {
+        if (inputData[i].FromAccount===name||inputData[i].ToAccount===name) {
+            console.log(`${inputData[i].Date}: £${inputData[i].amountPounds}.${inputData[i].amountPennies} 
+            from ${inputData[i].FromAccount} to ${inputData[i].ToAccount}. Narrative: ${inputData[i].Narrative}\n`);
+        }
+    }
+}
+
+
+
 function countDecimals(value) { 
     if ((value % 1) != 0) 
         return value.toString().split(".")[1].length;  
     return 0;
 }
+
 
 console.log('Please enter name of file to be used:')
 const fileChoice=readline.prompt();
@@ -67,8 +89,25 @@ if (fileType==='csv') {
 
         const allAccounts=csvfiles.createAccountArray(allTransactions);
         csvfiles.parseIntTransacAmounts(allTransactions);
+        
         csvfiles.addSubtractInAccounts(allTransactions,allAccounts);
-        csvfiles.userRequestList(allTransactions,allAccounts);
+        
+        for (let i=0;i<allAccounts.length;i++) {
+            allAccounts[i].balancePennies/=100;
+            allAccounts[i].balancePounds+=allAccounts[i].balancePennies;
+            // Wanted to use countDecimals here to check no. of decimal places but kept throwing undefined
+            }
+        
+        
+        
+        console.log('Would you like to list all accounts (List All), or search for transactions for a particular account (List ___)?\n');
+        const response=readline.prompt();
+        if (response==='List All') {
+            listAll(allAccounts);
+        } else {
+            const chosenName=response.slice(5);
+            listAccountTransactions(allTransactions,chosenName);
+        }
         
     });
 } else if (fileType==='json') {
@@ -95,9 +134,22 @@ if (fileType==='csv') {
         }
 
         csvfiles.parseIntTransacAmounts(allTransactions);
+        
         csvfiles.addSubtractInAccounts(allTransactions,allAccounts);
-        csvfiles.recombinePenniesPounds(allAccounts);
-        csvfiles.userRequestList(allTransactions,allAccounts);
+
+        for (let i=0;i<allAccounts.length;i++) {
+            allAccounts[i].balancePennies/=100;
+            allAccounts[i].balancePounds+=allAccounts[i].balancePennies;
+            }
+
+        console.log('Would you like to list all accounts (List All), or search for transactions for a particular account (List ___)?\n');
+        const response=readline.prompt();
+        if (response==='List All') {
+            listAll(allAccounts);
+        } else {
+            const chosenName=response.slice(5);
+            listAccountTransactions(allTransactions,chosenName);
+        }
 
 } else {
     console.log('File type not recognised. Please ensure that file is of a supported type and entered in the format "fileName.filetype".')
