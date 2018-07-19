@@ -1,8 +1,5 @@
-function countDecimals(value) { 
-    if ((value % 1) != 0) 
-        return value.toString().split(".")[1].length;  
-    return 0;
-}
+fs = require('fs')
+const fileContents=fs.readFileSync('Transactions2013.json','utf8');
 
-bob=3.42454
-console.log(countDecimals(bob));
+const parsedFileContents=JSON.parse(fileContents);
+console.log(parsedFileContents);
