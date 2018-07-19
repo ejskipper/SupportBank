@@ -1,10 +1,14 @@
 const readline = require('readline-sync');
-const MagicCSV = require("magic-csv");
-csv = new MagicCSV({trim: true});
+const parse = require('csv-parse/lib/sync');
 const log4js = require('log4js');
 const logger = log4js.getLogger('logs\\debug.log');
-const fs = require('fs')
-const csvfiles = require('./csvfiles')
+const fs = require('fs');
+const splitPoundsPennies = require('./splitPoundsPennies');
+const createAccountArray = require('./createAccountArray');
+const addSubtractInAccounts = require('./addSubtractInAccounts');
+const parseIntTransacAmounts = require('./parseIntTransacAmounts');
+const recombinePenniesPounds = require('./recombinePenniesPounds');
+const userRequestList = require('./userRequestList');
 
 log4js.configure({
     appenders: {
@@ -26,68 +30,39 @@ class Transaction {
     this.amountPennies=amountPennies;
     }
 }
-function countDecimals(value) { 
-    if ((value % 1) != 0) 
-        return value.toString().split(".")[1].length;  
-    return 0;
-}
+function runMyProgram() {
+    console.log('\nPlease enter name of file to be used:');
+    const fileChoice=readline.prompt();
+    fileType=fileChoice.split(".")[1];
 
-console.log('Please enter name of file to be used:')
-const fileChoice=readline.prompt();
-fileType=fileChoice.split(".")[1];
-
-if (fileType==='csv') {
-    csv.readFile(fileChoice, function() {
-        numberOfRows=csv.getRowCount()
-        if (numberOfRows) {
-            logger.info('Data extracted from file.')
-        } else {
-            logger.error('File not opened successfully.')
+    if (fileType==='csv') {
+        const fileContents=fs.readFileSync(fileChoice,'utf8');
+        const parsedFile=parse(fileContents);
+                
+        var allTransactions=[];
+        for (let i=1;i<parsedFile.length;i++) {
+            allTransactions.push(new Transaction(parsedFile[i][0],parsedFile[i][1],parsedFile[i][2],parsedFile[i][3],parsedFile[i][4]));
         }
 
-        
-        let allTransactions=[];
-        for (let i=0;i<numberOfRows;i++) {
-            let rowContent=csv.getRow(i);
-            allTransactions[i]=new Transaction(rowContent[0],rowContent[1],rowContent[2],rowContent[3],rowContent[4]);
-        }
+    } else if (fileType==='json') {
+        const fileContents=fs.readFileSync(fileChoice,'utf8');
+        var allTransactions=JSON.parse(fileContents);
 
-        csvfiles.splitPoundsPennies(allTransactions);
+    } else {
+        console.log('\nFile type not recognised. Please ensure that file is of a supported type and entered in the format "fileName.filetype".');
+        runMyProgram();
+    }
+    const allAccounts=createAccountArray.createAccountArray(allTransactions);
 
-        const allAccounts=csvfiles.createAccountArray(allTransactions);
+    splitPoundsPennies.splitPoundsPennies(allTransactions);
 
-        csvfiles.parseIntTransacAmounts(allTransactions);
-        
-        csvfiles.addSubtractInAccounts(allTransactions,allAccounts);
-        
-        for (let i=0;i<allAccounts.length;i++) {
-            allAccounts[i].balancePennies/=100;
-            allAccounts[i].balancePounds+=allAccounts[i].balancePennies;
-            // Wanted to use countDecimals here to check no. of decimal places but kept throwing undefined
-            }
-        
-        csvfiles.userRequestList(allTransactions,allAccounts);
-        
-    });
-} else if (fileType==='json') {
-    const fileContents=fs.readFileSync('Transactions2013.json','utf8');
-    const allTransactions=JSON.parse(fileContents);
-
-    const allAccounts=csvfiles.createAccountArray(allTransactions);
-
-    csvfiles.splitPoundsPennies(allTransactions);
-
-    csvfiles.parseIntTransacAmounts(allTransactions);
+    parseIntTransacAmounts.parseIntTransacAmounts(allTransactions);
     
-    csvfiles.addSubtractInAccounts(allTransactions,allAccounts);
+    addSubtractInAccounts.addSubtractInAccounts(allTransactions,allAccounts);
 
-    for (let i=0;i<allAccounts.length;i++) {
-        allAccounts[i].balancePennies/=100;
-        allAccounts[i].balancePounds+=allAccounts[i].balancePennies;
-        }
+    recombinePenniesPounds.recombinePenniesPounds(allAccounts);
 
-    csvfiles.userRequestList(allTransactions,allAccounts);
-
-} else {
-    console.log('File type not recognised. Please ensure that file is of a supported type and entered in the format "fileName.filetype".')
+    userRequestList.userRequestList(allTransactions,allAccounts);
 }
+
+runMyProgram();

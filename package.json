@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "csv-parse": "^2.5.0",
     "log4js": "^3.0.0",
     "magic-csv": "^7.0.2",
     "moment": "^2.22.2",

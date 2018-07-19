@@ -1,5 +1,15 @@
-fs = require('fs')
-const fileContents=fs.readFileSync('Transactions2013.json','utf8');
+function countDecimals(value) { 
+    if ((value % 1) != 0) 
+        return value.toString().split(".")[1].length;  
+    return 0;
+}
 
-const parsedFileContents=JSON.parse(fileContents);
-console.log(parsedFileContents);
+
+const parse = require('csv-parse/lib/sync')
+const fs = require('fs')
+
+const fileContents=fs.readFileSync('Transactions2014.csv','utf8');
+
+const parsedFile=parse(fileContents);
+
+console.log(parsedFile[1][2]);
