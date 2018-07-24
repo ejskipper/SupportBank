@@ -14,7 +14,7 @@ class Transaction {
     }
 }
 
-function getReadData() {
+function getReadDatan() {
     console.log('\nPlease enter name of file to be used:');
     const fileChoice=readline.prompt();
     const fileType=fileChoice.split(".")[1];
@@ -34,7 +34,6 @@ function getReadData() {
         const parsedJSON=JSON.parse(jsonContents);
         allTransactions = parsedJSON.map(transaction => 
             new Transaction(transaction.Date,transaction.FromAccount,transaction.ToAccount,transaction.Narrative,transaction.Amount));
-            console.log(allTransactions);
         break;
         default:
         console.log('\nFile type not recognised. Please ensure that file is of a supported type and entered in the format "fileName.filetype".');
@@ -44,4 +43,4 @@ function getReadData() {
     return allTransactions;
 }
 
-module.exports = getReadData;
+module.exports = getReadDatan;
