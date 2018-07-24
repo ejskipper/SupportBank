@@ -11,10 +11,10 @@ function splitPoundsPennies(allTransactions) {
         transaction.amountPennies = arrayAmount[1] || 0;
 
         if (isNaN(transaction.amountPounds)){
-            logger.error(`Line ${i+2} of file produced invalid data: Pounds not a number`);
+            logger.error(`Transaction on ${transaction.date} from ${transaction.fromAccount} produced invalid data: Pounds not a number`);
         }
         if (isNaN(transaction.amountPennies)){
-            logger.error(`Line ${i+2} of file produced invalid data: Pennies not a number`);
+            logger.error(`Transaction on ${transaction.date} from ${transaction.fromAccount} produced invalid data: Pennies not a number`);
         }
     })
 }
