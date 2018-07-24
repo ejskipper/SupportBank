@@ -10,9 +10,9 @@ function listAll(inputArray) {
 function listAccountTransactions(inputData,name) {
     console.log(`\nThe following transactions were found for ${name}:\n`)
     for (let i=0;i<inputData.length;i++) {
-        if (inputData[i].FromAccount===name||inputData[i].ToAccount===name) {
+        if (inputData[i].fromAccount===name||inputData[i].toAccount===name) {
             console.log(`${inputData[i].Date}: £${inputData[i].amountPounds}.${inputData[i].amountPennies} 
-            from ${inputData[i].FromAccount} to ${inputData[i].ToAccount}. Narrative: ${inputData[i].Narrative}\n`);
+            from ${inputData[i].fromAccount} to ${inputData[i].foAccount}. Narrative: ${inputData[i].narrative}\n`);
         }
     }
 }

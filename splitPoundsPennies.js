@@ -3,8 +3,8 @@ const logger = log4js.getLogger('logs\\debug.log');
 
 function splitPoundsPennies(allTransactions) {
     allTransactions.forEach(transaction => {
-        let stringAmount = transaction.Amount.toString();
-        let arrayAmount = stringAmount.split('.');
+        const stringAmount = transaction.amount.toString();
+        const arrayAmount = stringAmount.split('.');
         transaction.amountPounds=arrayAmount[0];
         transaction.amountPennies=arrayAmount[1];
 

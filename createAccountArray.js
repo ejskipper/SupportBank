@@ -23,8 +23,8 @@ function removeDuplicates(inputArray) {
 }
 
 function createAccountArray(allTransactions) {
-    const allFromNames = allTransactions.map(transaction => transaction.FromAccount);
-    const allToNames = allTransactions.map(transaction => transaction.ToAccount);
+    const allFromNames = allTransactions.map(transaction => transaction.fromAccount);
+    const allToNames = allTransactions.map(transaction => transaction.toAccount);
     let allNames=allFromNames.concat(allToNames);
     removeDuplicates(allNames);
     const allAccounts = allNames.map(name => new Account(name,0,0))
