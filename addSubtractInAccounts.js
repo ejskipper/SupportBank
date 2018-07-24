@@ -13,4 +13,4 @@ function addSubtractInAccounts(allTransactions,allAccounts) {
     }
 }
 
-module.exports={addSubtractInAccounts}
+module.exports=addSubtractInAccounts

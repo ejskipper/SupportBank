@@ -33,36 +33,39 @@ class Transaction {
 function runMyProgram() {
     console.log('\nPlease enter name of file to be used:');
     const fileChoice=readline.prompt();
-    fileType=fileChoice.split(".")[1];
-
-    if (fileType==='csv') {
-        const fileContents=fs.readFileSync(fileChoice,'utf8');
-        const parsedFile=parse(fileContents);
+    const fileType=fileChoice.split(".")[1];
+    let allTransactions = [];
+// Make this a separate module to read files
+    switch (fileType) {
+        case 'csv':
+        const csvContents=fs.readFileSync(fileChoice,'utf8');
+        const parsedFile=parse(csvContents);
                 
-        var allTransactions=[];
         for (let i=1;i<parsedFile.length;i++) {
             allTransactions.push(new Transaction(parsedFile[i][0],parsedFile[i][1],parsedFile[i][2],parsedFile[i][3],parsedFile[i][4]));
         }
-
-    } else if (fileType==='json') {
-        const fileContents=fs.readFileSync(fileChoice,'utf8');
-        var allTransactions=JSON.parse(fileContents);
-
-    } else {
+        break;
+        case 'json':
+        const jsonContents=fs.readFileSync(fileChoice,'utf8');
+        allTransactions=JSON.parse(jsonContents);
+        break;
+        default:
         console.log('\nFile type not recognised. Please ensure that file is of a supported type and entered in the format "fileName.filetype".');
         runMyProgram();
+        break;
     }
-    const allAccounts=createAccountArray.createAccountArray(allTransactions);
+    const allAccounts=createAccountArray(allTransactions);
+// Combine these four vv
+    splitPoundsPennies(allTransactions);
 
-    splitPoundsPennies.splitPoundsPennies(allTransactions);
-
-    parseIntTransacAmounts.parseIntTransacAmounts(allTransactions);
+    parseIntTransacAmounts(allTransactions);
     
-    addSubtractInAccounts.addSubtractInAccounts(allTransactions,allAccounts);
+    addSubtractInAccounts(allTransactions,allAccounts);
 
-    recombinePenniesPounds.recombinePenniesPounds(allAccounts);
+    recombinePenniesPounds(allAccounts);
 
-    userRequestList.userRequestList(allTransactions,allAccounts);
+    userRequestList(allTransactions,allAccounts);
 }
 
+logger.info('Program is running')
 runMyProgram();

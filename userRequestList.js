@@ -26,4 +26,4 @@ function userRequestList(allTransactions,allAccounts) {
         listAccountTransactions(allTransactions,chosenName);
     }
 }
-module.exports={userRequestList}
+module.exports=userRequestList

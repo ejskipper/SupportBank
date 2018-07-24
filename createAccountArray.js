@@ -23,20 +23,13 @@ function removeDuplicates(inputArray) {
 }
 
 function createAccountArray(allTransactions) {
-    let allFromNames=[];                         
-    let allToNames=[];
-    for (let i=0; i<allTransactions.length;i++) {
-        allFromNames[i]=allTransactions[i].FromAccount;
-        allToNames[i]=allTransactions[i].ToAccount;
-    }
+    const allFromNames = allTransactions.map(transaction => transaction.FromAccount);
+    const allToNames = allTransactions.map(transaction => transaction.ToAccount);
     let allNames=allFromNames.concat(allToNames);
     removeDuplicates(allNames);
-    let allAccounts=[];                 
-    for (let i=0;i<allNames.length;i++) {
-        allAccounts[i]=new Account(allNames[i],0,0);
-    }
+    const allAccounts = allNames.map(name => new Account(name,0,0))
     return allAccounts;
 }
 
 
-module.exports={createAccountArray}
+module.exports=createAccountArray

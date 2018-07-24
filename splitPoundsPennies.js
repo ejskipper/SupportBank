@@ -2,21 +2,21 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('logs\\debug.log');
 
 function splitPoundsPennies(allTransactions) {
-    for (let i=0;i<allTransactions.length;i++) {
-        let stringAmount=allTransactions[i].Amount.toString();
-        let arrayAmount=stringAmount.split('.');
-        allTransactions[i].amountPounds=arrayAmount[0];
-        allTransactions[i].amountPennies=arrayAmount[1];
-        if (allTransactions[i].amountPennies===undefined) {
-            allTransactions[i].amountPennies='0';
+    allTransactions.forEach(transaction => {
+        let stringAmount = transaction.Amount.toString();
+        let arrayAmount = stringAmount.split('.');
+        transaction.amountPounds=arrayAmount[0];
+        transaction.amountPennies=arrayAmount[1];
+
+        transaction.amountPennies = arrayAmount[1] || 0;
+
+        if (isNaN(transaction.amountPounds)){
+            logger.error(`Line ${i+2} of file produced invalid data: Pounds not a number`);
         }
-        if (isNaN(allTransactions[i].amountPounds)){
-            logger.error(`?? ${i+2} of file produced invalid data: Pounds not a number`);
+        if (isNaN(transaction.amountPennies)){
+            logger.error(`Line ${i+2} of file produced invalid data: Pennies not a number`);
         }
-        if (isNaN(allTransactions[i].amountPennies)){
-            logger.error(`?? ${i+2} of file produced invalid data: Pennies not a number`);
-        }
-    }
+    })
 }
 
-module.exports={splitPoundsPennies}
+module.exports=splitPoundsPennies 
